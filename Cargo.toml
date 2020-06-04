@@ -1,0 +1,26 @@
+[package]
+name = "todoactix"
+version = "0.1.0"
+authors = ["peshwar9 <par.esh1937@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+# Actix web framework and async runtime
+actix-web = "2.0.0"
+actix-rt = "1.0.0"
+
+# Data serialization library
+serde = { version = "1.0.110", features = ["derive"] }
+
+# Environment variable access libraries
+dotenv = "0.15.0"
+config = "0.10.1"
+
+# Postgress access libraries
+tokio-pg-mapper = "0.1.4"
+tokio-pg-mapper-derive = "0.1.4"
+deadpool-postgres = "0.5.0"
+tokio-postgres = "0.5.1"
