@@ -25,6 +25,9 @@ tokio-pg-mapper-derive = "0.1.4"
 deadpool-postgres = "0.5.0"
 tokio-postgres = "0.5.1"
 
+# For JWT support
+actix-web-httpauth = "0.4.1"
+jsonwebtoken = "7.1.0"
 
 [dev-dependencies]
 lazy_static = "1.4.0"

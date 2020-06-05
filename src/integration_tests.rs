@@ -8,6 +8,8 @@ mod tests {
 use actix_web::{test, web, App};
 // External crates - Utilities
 use lazy_static::lazy_static;
+// This code is not used and only there for future reference to run integration tests**
+
 use dotenv::dotenv;
 use crate::config::Config;
 use crate::handler;

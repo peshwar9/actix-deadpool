@@ -2,6 +2,7 @@
 use std::fmt;
 // External crates - Primary
 use actix_web::{error::ResponseError, http::StatusCode, HttpResponse};
+use actix_web_httpauth::middleware::HttpAuthentication;
 use deadpool_postgres::PoolError;
 use tokio_postgres::error as PgError;
 // External crates - Utilities
@@ -26,6 +27,8 @@ pub enum ApiError {
     BadRequest(String),
     NotFound(String),
     InternalServerError(String),
+    CannotEncodeJwtToken(String),
+    CannotDecodeJwtToken(String),
 }
 
 // *** Differnt types of Type mapping & conversion Functions ***
@@ -51,6 +54,12 @@ impl ResponseError for ApiError {
             }
             ApiError::NotFound(message) => {
                 HttpResponse::NotFound().json::<ErrorResponse>(message.into())
+            }
+            ApiError::CannotEncodeJwtToken(message) => {
+                HttpResponse::Unauthorized().json::<ErrorResponse>(message.into())
+            }            
+            ApiError::CannotDecodeJwtToken(message) => {
+                HttpResponse::Unauthorized().json::<ErrorResponse>(message.into())
             }
             ApiError::DBError(message) => {
                 HttpResponse::NotFound().json::<ErrorResponse>(ErrorResponse {

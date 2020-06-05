@@ -7,6 +7,7 @@ use deadpool_postgres::{Client, Pool};
 use crate::model::{NewList, UpdateList};
 use crate::repo::{create_list_db, delete_list_db, get_lists_db, update_list_db, get_one_list_db};
 use crate::errors::ApiError;
+use crate::auth::{create_jwt, decode_jwt};
 // Const and type declarations
 // Struct declarations
 // Functions
@@ -16,6 +17,14 @@ use crate::errors::ApiError;
 pub async fn health_handler(_pool: web::Data<Pool>) -> impl Responder {
 
  HttpResponse::Ok().json("Feeling bright and shining.")
+}
+
+//Get jwt token
+
+pub async fn get_token() -> Result<HttpResponse, ApiError> {
+    println!("going to create jwt");
+    create_jwt()
+    .map(|token| HttpResponse::Ok().json(token))
 }
 
 // Get Lists Handler
