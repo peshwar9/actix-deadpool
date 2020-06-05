@@ -5,7 +5,7 @@ use deadpool_postgres::{Client, Pool};
 // External crates - Utilities
 // Other internal modules
 use crate::model::{NewList, UpdateList};
-use crate::repo::{create_list_db, delete_list_db, get_lists_db, update_list_db};
+use crate::repo::{create_list_db, delete_list_db, get_lists_db, update_list_db, get_one_list_db};
 // Const and type declarations
 // Struct declarations
 // Functions
@@ -28,6 +28,8 @@ pub async fn get_lists_handler(pool: web::Data<Pool>) -> impl Responder {
 
 }
 
+// Create list handler
+// http post localhost:12345/list title=shinylist category=work
 pub async fn create_list_handler(
     pool: web::Data<Pool>,
     json: web::Json<NewList>,
@@ -40,6 +42,8 @@ pub async fn create_list_handler(
 
 }
 
+// Update list handler
+// http put localhost:12345/list/1 title=notsoshinylist
 pub async fn update_list_handler(
     pool: web::Data<Pool>,
     path: web::Path<(i32,)>,
@@ -54,6 +58,8 @@ pub async fn update_list_handler(
 
 }
 
+// Delete list handler
+// http delete localhost:12345/list/1
 pub async fn delete_list_handler(pool: web::Data<Pool>, path: web::Path<(i32,)>) -> impl Responder {
     
     let client: Client = pool.get().await?;
@@ -62,4 +68,14 @@ pub async fn delete_list_handler(pool: web::Data<Pool>, path: web::Path<(i32,)>)
     .await
     .map(|_| HttpResponse::Ok())
 
+}
+
+// Get one list handler
+// http localhost:12345/list/1
+pub async fn get_one_list_handler(pool: web::Data<Pool>, path: web::Path::<(i32,)>) -> impl Responder {
+    let client: Client = pool.get().await?;
+
+    get_one_list_db(&client,path.0)
+    .await
+    .map(|list| HttpResponse::Ok().json(list))
 }

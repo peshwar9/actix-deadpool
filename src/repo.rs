@@ -26,6 +26,7 @@ pub async fn get_lists_db(client: &deadpool_postgres::Client) -> Result<Vec<List
     Ok(lists)
 }
 
+
 pub async fn create_list_db(
     client: &deadpool_postgres::Client,
     newlist: NewList
@@ -47,6 +48,7 @@ pub async fn create_list_db(
         ))
 }
 
+
 pub async fn delete_list_db(client: &deadpool_postgres::Client, id: i32) -> Result<(), ApiError> {
     let stmt1 = client.prepare("select * from lists where id = $1").await?;
     let res1 = client.query_one(&stmt1, &[&id]).await;
@@ -64,6 +66,23 @@ pub async fn delete_list_db(client: &deadpool_postgres::Client, id: i32) -> Resu
         .map_err(|err| ApiError::DBError(err.to_string()))?;
 
     Ok(())
+}
+
+pub async fn get_one_list_db(client: &deadpool_postgres::Client, id: i32) -> Result<List, ApiError> {
+    let stmt = client
+                .prepare("select * from lists where id = $1")
+                .await?;
+
+    let res1 = client
+                .query_one(&stmt,&[&id])
+                .await;
+    
+    if let Err(_) = res1 {
+        return Err(ApiError::NotFound("Item not found".into()));
+    }
+    Ok(List::from_row_ref(&res1.unwrap()).unwrap())
+    
+        
 }
 
 pub async fn update_list_db(

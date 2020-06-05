@@ -6,7 +6,7 @@ use actix_web::{web, App, HttpServer};
 use dotenv::dotenv;
 // Other internal modules
 use crate::config::Config;
-use handler::{create_list_handler, delete_list_handler, health_handler, get_lists_handler, update_list_handler};
+use handler::{create_list_handler, delete_list_handler, health_handler, get_lists_handler, update_list_handler, get_one_list_handler};
 
 // Const and type declarations
 // Struct declarations
@@ -33,6 +33,7 @@ async fn main() -> io::Result<()> {
             .data(pool.clone())
             .route("/health", web::get().to(health_handler))
             .route("/list", web::get().to(get_lists_handler))
+            .route("/list/{list_id}", web::get().to(get_one_list_handler))
             .route("/list", web::post().to(create_list_handler))
             .route("/list/{list_id}", web::delete().to(delete_list_handler))
             .route("/list/{list_id}", web::put().to(update_list_handler))
