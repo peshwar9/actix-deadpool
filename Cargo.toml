@@ -24,3 +24,8 @@ tokio-pg-mapper = "0.1.4"
 tokio-pg-mapper-derive = "0.1.4"
 deadpool-postgres = "0.5.0"
 tokio-postgres = "0.5.1"
+
+
+[dev-dependencies]
+lazy_static = "1.4.0"
+serde_json = "1.0.48"

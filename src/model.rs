@@ -1,4 +1,5 @@
 // Standard lib
+use std::fmt;
 // External crates - Primary
 use actix_web::web;
 // External crates - Utilities
@@ -63,5 +64,12 @@ impl From<web::Json<NewList>> for NewList {
                 None => None,
             },
         }
+    }
+}
+
+// Utility function to print out NewList. This is needed to do *new_list.to_string()* elsewhere in program
+impl fmt::Display for NewList {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
+        write!(f, "{}", self)
     }
 }
