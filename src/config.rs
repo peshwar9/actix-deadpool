@@ -1,5 +1,11 @@
-use serde::Deserialize;
+// Standard lib
+// External crates - Primary
 use config::ConfigError;
+// External crates - Utilities
+use serde::Deserialize;
+// Other internal modules
+// Const and type declarations
+// Struct declarations
 
 #[derive(Deserialize)]
 pub struct Server {
@@ -12,6 +18,8 @@ pub struct Config {
     pub server: Server,
     pub db: deadpool_postgres::Config,
 }
+
+// Functions
 
 impl Config {
     pub fn env() -> Result<Self, ConfigError> {
