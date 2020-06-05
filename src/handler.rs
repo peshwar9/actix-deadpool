@@ -1,10 +1,11 @@
 // Standard lib
+use std::env;
 // External crates - Primary
-use actix_web::{web, HttpResponse, Responder};
+use actix_web::{web, HttpResponse, HttpRequest, Responder};
 use deadpool_postgres::{Client, Pool};
 // External crates - Utilities
 // Other internal modules
-use crate::model::{NewList, UpdateList};
+use crate::model::{NewList, UpdateList, AdminAuth};
 use crate::repo::{create_list_db, delete_list_db, get_lists_db, update_list_db, get_one_list_db};
 use crate::errors::ApiError;
 use crate::auth::{create_jwt, decode_jwt};
@@ -21,14 +22,21 @@ pub async fn health_handler(_pool: web::Data<Pool>) -> impl Responder {
 
 //Get jwt token
 
-pub async fn get_token() -> Result<HttpResponse, ApiError> {
-    println!("going to create jwt");
+pub async fn get_token(json: web::Json<AdminAuth>) -> Result<HttpResponse, ApiError> {
+    let env_user = env::var("ADMIN_USER").expect("Admin user not set");
+    let env_password = env::var("ADMIN_PASSWORD").expect("Admin password not set");
+    let admin_auth: AdminAuth = json.into();
+    if admin_auth.user != env_user || admin_auth.password != env_password {
+        return Err(ApiError::NotAuthorized("Not authorized".into()))
+    }
+    
     create_jwt()
     .map(|token| HttpResponse::Ok().json(token))
 }
 
 // Get Lists Handler
-// http localhost:12345/lists
+// http localhost:12345/lists  => without jwt
+// http localhost:12345/list/ 'Authorization: Bearer xxxxx'  => with jwt
 pub async fn get_lists_handler(pool: web::Data<Pool>) -> Result<HttpResponse, ApiError> {
     let client: Client = pool.get().await?;
 
@@ -53,7 +61,8 @@ pub async fn create_list_handler(
 }
 
 // Update list handler
-// http put localhost:12345/list/1 title=notsoshinylist
+// http put localhost:12345/list/1 title=notsoshinylist  => without jwt
+// http put localhost:12345/list/23 'Authorization: Bearer xxxx' category=homeoffice => with jwt
 pub async fn update_list_handler(
     pool: web::Data<Pool>,
     path: web::Path<(i32,)>,
@@ -69,7 +78,8 @@ pub async fn update_list_handler(
 }
 
 // Delete list handler
-// http delete localhost:12345/list/1
+// http delete localhost:12345/list/1 => without jwt
+// http delete localhost:12345/list/19 'Authorization: Bearer xxxx' => with JWT
 pub async fn delete_list_handler(pool: web::Data<Pool>, path: web::Path<(i32,)>) -> Result<HttpResponse, ApiError> {
     
     let client: Client = pool.get().await?;

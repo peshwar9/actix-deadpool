@@ -44,7 +44,7 @@ async fn main() -> io::Result<()> {
         App::new()
             .data(pool.clone())
             .route("/health", web::get().to(health_handler))
-            .route("/auth", web::get().to(get_token))
+            .route("/auth", web::post().to(get_token))
             .service(
                 web::scope("/list")
                 .wrap(auth.clone())

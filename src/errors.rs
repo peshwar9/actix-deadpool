@@ -25,6 +25,7 @@ pub enum ApiError {
     PoolError(String),
     DBError(String),
     BadRequest(String),
+    NotAuthorized(String),
     NotFound(String),
     InternalServerError(String),
     CannotEncodeJwtToken(String),
@@ -55,6 +56,9 @@ impl ResponseError for ApiError {
             ApiError::NotFound(message) => {
                 HttpResponse::NotFound().json::<ErrorResponse>(message.into())
             }
+            ApiError::NotAuthorized(message) => {
+                HttpResponse::Unauthorized().json::<ErrorResponse>(message.into())
+            }             
             ApiError::CannotEncodeJwtToken(message) => {
                 HttpResponse::Unauthorized().json::<ErrorResponse>(message.into())
             }            

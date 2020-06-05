@@ -34,6 +34,11 @@ pub struct UpdateList {
     pub category: Option<String>,
 }
 
+#[derive(Deserialize)]
+pub struct AdminAuth {
+    pub user: String,
+    pub password: String,
+}
 // Functions
 
 // Convert incoming json data type for update to <UpdateList>
@@ -54,7 +59,7 @@ impl From<web::Json<UpdateList>> for UpdateList {
 }
 
 // Convert incoming json data type for create to <NewList>
-
+// You can use this as : json.into() and it will convery json to NewList
 impl From<web::Json<NewList>> for NewList {
     fn from(json: web::Json<NewList>) -> Self {
         NewList {
@@ -63,6 +68,17 @@ impl From<web::Json<NewList>> for NewList {
                 Some(category) => Some(category.to_string()),
                 None => None,
             },
+        }
+    }
+}
+
+// Convert incoming json data type for create to <AdminAuth>
+// You can use this as : json.into() and it will convery json to AdminAuth
+impl From<web::Json<AdminAuth>> for AdminAuth {
+    fn from(json: web::Json<AdminAuth>) -> Self {
+        AdminAuth {
+            user: json.user.clone(),
+            password: json.password.clone(),
         }
     }
 }
