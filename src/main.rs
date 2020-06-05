@@ -9,6 +9,7 @@ mod handler;
 mod model;
 mod config;
 mod repo;
+mod errors;
 
 use crate::config::Config;
 use handler::{index_handler,create_list_handler, delete_list_handler, update_list_handler};
